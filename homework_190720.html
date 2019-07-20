@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> 넣고싶은 걸 넣어랄</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no ">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://sgether.tv/assets/styles/app.css?v=9">
+        <link rel="stylesheet" href="http://img.streetgamer.tv/assets/styles/now_to.css">
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>    
+        
+    </head>
+    <body class="black">
+
+
+        <div class="container" style="padding: 2rem;">
+            <div id="app1"></div>
+        </div>
+
+        <div>
+            <div id="app2" style="width: 100%;">
+              <div v-for="game in games" style="clear:left;width: 80%; padding: 10%; display: block;">
+                <div style=" display: flex; margin-bottom: 20px;">
+                <div style="float: left; width: 40px; height: 40px; border-radius: 1000px; overflow: hidden;;"><img v-bind:src="game.thumb_url" style="width: 40px; object-fit: cover;"></div>
+                <div style="float: left; height: 40px; padding-top:10px; padding-left: 10px; overflow: hidden;">{{game.ko_name}}</div>
+                </div>
+                  <div style="float: left;width: 100%; height: 50%;overflow: hidden;"><img v-bind:src="game.background_url" v-bind:alt="game.subject" style="width: 100%;"></div>
+
+                  <div>
+                  <span style="float: left; display: block;">{{game.popular}}</span>
+                </div>
+              </div>
+        
+            </div>
+        </div>
+
+        <template id="app2_tem">
+            <div>
+                <div style="margin-bottom:2rem;">
+                    <a class="btn btn-sm white" v-on:click="page='list'">list</a>
+                    <a class="btn btn-sm white" v-on:click="page='write'">write</a>
+                </div>
+            
+
+                <div class="box" v-if="page=='list'">
+                    <div class="box-body">
+                            <div class="list">
+                                <div class="list-item" v-for="game in games" v-bind:id="'replay_'+game.no">
+                                    <div class="list-body">
+                                        <div class="">{{game.user_name}}</div>
+                                        <div>{{game.name}}</div>
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            
+        </template>
+
+        <script>
+
+            var app = new Vue({
+                el:'#app2',
+                data:{
+                    games:[],
+                    row_count:10,
+                },
+                methods: {
+                  listload:function(){
+                      var vm = this;
+                      $.ajax({
+                          type:'GET',
+                          url:'http://test.sgether.tv/api/game/list?',
+                          data:'row_count=10&page_no='+vm.page_no,
+                          dataType: 'json',
+                          success:function(jsondata){
+                            vm.games = jsondata.result.games;
+                          },
+        
+                        });
+                    },
+                },
+                created() {
+                  
+                  this.listload();
+        
+                },    
+            });
+        </script>
+
+        <script>
+            var scroll_lock=false;
+            var list_end=false;
+
+            var app1 = new Vue ({
+                el: '#app1',
+                template:'#app1_tem',
+                data:{
+                    page:'list',
+                    comments:[],
+                    bbs_id:'bbim',
+                    page_no:1, 
+                    user_name:'삠삠',
+                },
+
+                methods: {
+                    listLoad:function(){
+                        var vm = this;
+
+                        $.ajax({
+                            type:'GET',
+                            url:'http://test.sgether.tv/api/test_bbs/index?',
+                            data:'bbs_id=bbim&row_count=10&page_no='+vm.page_no,
+                            dataType:'json',
+                            success:function(data){
+                                for(i=0; i<data.result.comments.length; i++){
+                                    vm.comments.push(data.result.comments[i]);
+                                }
+                                vm.page_no++;
+                            }
+
+                        });
+                    },
+                    sendReplay:function(){
+                        var vm = this;
+                        if(!$('#txt_username').val()){
+                            alert('이름을 쓰세요');
+                            $('#txt_username').focus();
+                            return false;
+                        }
+
+                        if(!$('#txt_replay').val()){
+                            alert('내용을 쓰세요');
+                            $('#txt_replay').focus();
+                            return false;
+                        }
+
+                        $.ajax({
+                            type:'POST',
+                            url:'http://test.sgether.tv/api/test_bbs/send?',
+                            data:'bbs_id='+vm.bbs_id+'&user_name='+encodeURIComponent($('#txt_username').val())+'&replay='+encodeURIComponent($('#txt_replay').val()),
+                            dataType:'json',
+                            success:function(data){
+                                console.log(data);
+                                alert(data.message);
+                                if(data.code==200){
+                                    vm.page_no=1;
+                                    vm.comments=[];
+                                    vm.page='list';
+                                    $('#comment_input').find('.form-control').val('');
+                                    vm.listLoad();
+                                    vm.page='list';
+                                }
+                            }
+                        });
+                        
+                    },
+                    removeReplay:function(replay_no){
+                        var vm = this;
+
+                        if(!confirm('댓글을 삭제 ?')){
+                            return false;
+                        }
+
+                        $.ajax({
+                            type:'POST',
+                            url:'http://test.sgether.tv/api/test_bbs/remove?',
+                            data:'bbs_id='+vm.bbs_id+'&replay_no='+replay_no,
+                            dataType:'json',
+                            success:function(data){
+
+                                if(data.code==200){
+                                    $('replay_'+replay_no).remove();
+                                    vm.listLoad();
+                                    vm.page='list';
+                                }
+                            }
+                        });
+                        
+                    },
+                },
+                created() {
+                    this.listLoad();
+
+                    var vm = this;
+                    $(window).unbind('scroll').scroll(function () {
+
+                        var maxHeight = $(document).height() - $(window).height();
+                        var currentScroll = $(window).scrollTop() ;
+
+                        if (maxHeight <= (currentScroll)) {
+                            if (!scroll_lock) {
+                                
+                                console.log('!! page_load !!');
+                                
+                                scroll_lock = true;
+                                vm.listLoad();
+                                setTimeout(function () {
+                                    scroll_lock = false;
+                                }, 300);
+                            }
+                        }
+                    });
+                },
+
+                updated() {
+                    
+                },
+
+            });
+
+        </script>
+
+    </body>
+</html>
