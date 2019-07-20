@@ -16,15 +16,14 @@
     crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css">
-    
+
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+				
+
     
     <style>
-    .box1 {
-        width: 300px; height: 50px; padding: 10px; background-color: #EC8180; color: #fff;font-weight: 800;
-    }
-    .box1 > h1 {
-        display: none;
-    }
+    .box1 {width: 10000px; height: 50px; padding: 10px; background-color: #EC8180; color: #fff;font-weight: 800;}
 
     body {
         padding: 0;
@@ -38,7 +37,7 @@
         <div id="app1" class="box1">
             
         <h1>하이</h1>    
-        
+        <a href=""></a>
         </div>
 
         <script>
@@ -52,19 +51,38 @@
             //     $('#app1').css('transition-duration','500').removeClass('FaceInLeft');
             // }, 500);
 
-            function winset(){
-                $('#app1').height($(window).height());
-                console.log('사이즈')
+            // function winset(){
+            //     $('#app1').height($(window).height());
+            //     console.log('사이즈')
+            // }
+            //     $('document').ready(function(){                
+                    // function infini() {  
+            //         winset();
+            //         setTimeout(function(){
+            //             $('.box1').addClass('animated fadeIn').show();
+            //         },1100);
+            //         setTimeout(function(){
+            //             $('h1').addClass('animated fadeIn').show();
+            //         },1800);
+            //         setTimeout(function(){
+            //             $('#app1 > h1').addClass('animated fadeIn').show();
+            //         },2400);
+            //     });
+            // }
+            $(document).ready(function(){
+                ajax_test();
+            });
+            function ajax_test(){
+
+                $.ajax({
+                    type:'GET',
+                    url:'http://test.sgether.tv',
+                    dataType:'html',
+                    success:function(htmlData){
+                        $('#app1').html(htmlData);
+                    }
+                });
             }
-
-        $('document').ready(function(){
-            winset();
-
-            setTimeout(function(){
-                $('#app > h1').addClass('animated fadeIn').show();
-            },400);
-
-        });
 
             $(window).resize(function(){
                 winset();
