@@ -6,30 +6,30 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 
-<div class="img_gall">
+<div class="img_gall"> <!-- div 안에 펑션롤링이 와서 슬라이드 될거임-->
 </div>
  
 <script>
-function rolling(){
+function rolling(){ // 롤링이라는 펑션명을 정했고 아래에는 어떻게 표현할지 보여줄게,
     $.ajax({
-    type:'GET',
-    url:'http://test.sgether.tv/api/post/list',
+    type:'GET', //get 방식의 주소
+    url:'http://test.sgether.tv/api/post/list', // json data 불러오기
     data:{
-        'type':'live',
-        'rowcount':5
-    },
-    dataType:'json',
-    success:function(jsondata){
-        for(i=0; i<jsondata.result.posts.length; i++){
-            $('.img_gall').append('<img src="'+jsondata.result.posts[i].thumb_url+'" height="1024px">');
+        type:'live', // 디비안에 있는 타입중에 live 로 분류된 파일 가지고 오기
+        rowcount:5 //5줄
+     },
+    dataType:'json', //디비 타입은 제이슨이다
+    success:function(jsondata){ //위에 걸 성공했을때 제이슨 파일을 가지고 오는데
+        for(i=0; i<jsondata.result.posts.length; i++){ //그것은 .... 0개는 갖고오지말고 0보다 클대 가지고 와라, 숫자를
+            $('.img_gall').append('<img src="'+jsondata.result.posts[i].thumb_url+'" height="1024px">'); //.img_gall이라는 클래스를 찾아서 넣어라 이미지 소스로 묶어서 섬네일 유알엘을 불러오고 높이는 1024
         }
-        $('.img_gall').slick({
-            autoplay:true,
-            dots: true,
-            infinite: true,
-            speed: 500,
-            fade: true,
-            cssEase: 'linear'
+        $('.img_gall').slick({ //슬릭? 슬라이더 라이브러리에서 사용하는 이름을 불러온거고,
+            autoplay:true, //자동재생이고
+            dots: true, //하단에 도트로된 인디케이터 나오고
+            infinite: true, //무한 롤링에
+            speed: 500, //0.5초마다 돌아라
+            fade: true, // 부드럽세 슝슝
+            cssEase: 'linear' // 가로로 돌아라
         });
     }
 });
@@ -38,8 +38,8 @@ function rolling(){
 
 
 
-$(document).ready(function(){
-    rolling()
+$(document).ready(function(){ //문서가 시작될때
+    rolling() // 위에 만든 펑션 롤링으 가지고 재생시켜라
 });
         
 </script>

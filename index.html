@@ -70,21 +70,21 @@
             //     });
             // }
             $(document).ready(function(){
-                ajax_test();
+                ajax_test(); //문서가 시작되면 에이작스 테스트 기능을 불러올꺼야
             });
-            function ajax_test(){
+            function ajax_test(){ // 에이젝스 테스트 기능을 아래에서 설명할게
 
                 $.ajax({
-                    type:'GET',
-                    url:'http://test.sgether.tv',
-                    dataType:'html',
-                    success:function(htmlData){
-                        $('#app1').html(htmlData);
+                    type:'GET', //이건 get 방식에
+                    url:'http://test.sgether.tv', // 일단 주소인데,
+                    dataType:'html', // 기존디비와 다르게 전체페이지 html 을가지고 올고야
+                    success:function(htmlData){ //만약 그게 성공했나면
+                        $('#app1').html(htmlData); // 아이디 app1에다가 html 데이타를 뿌려죠
                     }
                 });
             }
 
-            $(window).resize(function(){
+            $(window).resize(function(){ //ㅇ리사이즈 윈도우..
                 winset();
             });
             
